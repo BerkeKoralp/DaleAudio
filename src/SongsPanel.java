@@ -40,7 +40,7 @@ public class SongsPanel extends JPanel {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 fileChooser.setMultiSelectionEnabled(true);
-                fileChooser.setFileFilter(new FileNameExtensionFilter("Wav Files", "wav"));
+                fileChooser.setFileFilter(new FileNameExtensionFilter("MP3 Files", "mp3"));
 
                 int result = fileChooser.showOpenDialog(SongsPanel.this);
 
@@ -53,15 +53,15 @@ public class SongsPanel extends JPanel {
                     for (File file : selectedFiles) {
                         if (file.isDirectory()) {
                             // If it's a directory, list all Wav files inside
-                            File[] wavFiles = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".wav"));
-                            if (wavFiles != null) {
-                                for (File wavFile : wavFiles) {
+                            File[] mp3Files = file.listFiles((dir, name) -> name.toLowerCase().endsWith(".mp3"));
+                            if (mp3Files != null) {
+                                for (File wavFile : mp3Files) {
                                     addWavToPanel(wavFile, scrollPanel);
                                 }
                             }
                         } else {
                             // If it's a file, check if it's a Wav file
-                            if (file.getName().toLowerCase().endsWith(".wav")) {
+                            if (file.getName().toLowerCase().endsWith(".mp3")) {
                                 addWavToPanel(file, scrollPanel);
                             }
                         }

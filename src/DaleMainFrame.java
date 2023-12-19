@@ -1,7 +1,15 @@
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.BitstreamException;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackEvent;
+import javazoom.jl.player.advanced.PlaybackListener;
+
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class DaleMainFrame extends JFrame {
@@ -44,18 +52,23 @@ public class DaleMainFrame extends JFrame {
 
     public void playCurrentSong() throws UnsupportedAudioFileException, IOException {
 
-        try{
-            if(currentlyPlayingSong.exists()){
-       //NEED TO BE COMPLETEDED CLİP DIDN'T WORK
-                System.out.println("Clip oluşturuluyor");
+        String mp3FilePath = currentlyPlayingSong.getAbsolutePath();
 
+        try (FileInputStream fileInputStream = new FileInputStream(mp3FilePath)) {
+            AdvancedPlayer player = new AdvancedPlayer(fileInputStream);
 
-            }else {
-                System.out.println("Can't find file");
-            }
+            player.setPlayBackListener(new PlaybackListener() {
+                @Override
+                public void playbackFinished(PlaybackEvent evt) {
+                    System.out.println("Playback finished");
+                }
+            });
 
-        }  catch(Exception e){
-            System.out.println(e);
+            System.out.println("Playing: " + mp3FilePath);
+            player.play();
+
+        } catch (JavaLayerException | IOException e) {
+            e.printStackTrace();
         }
     }
 
