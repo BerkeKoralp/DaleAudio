@@ -1,7 +1,4 @@
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -20,8 +17,16 @@ public class Server {
             // Open input stream to read data from the client
             InputStream in = clientSocket.getInputStream();
 
+            // Read the file name length
+            int fileNameLength = in.read();
+
+            // Read the file name
+            byte[] fileNameBytes = new byte[fileNameLength];
+            in.read(fileNameBytes);
+            String fileName = new String(fileNameBytes);
+
             // Open output stream to write the received data to a file
-            BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream("received_music.mp3"));
+            BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(fileName));
 
             // Buffer for reading data
             byte[] buffer = new byte[4096];
