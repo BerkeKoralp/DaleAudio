@@ -15,8 +15,10 @@ import java.io.IOException;
 public class DaleMainFrame extends JFrame {
 
     private File currentlyPlayingSong;
-
     boolean isPlaybackCompleted;
+
+    private AdvancedPlayer player;
+    private Thread currentlyPlayingThread;
 
     public DaleMainFrame() throws HeadlessException {
         Dimension size
@@ -24,7 +26,7 @@ public class DaleMainFrame extends JFrame {
         setLayout(null);
         setSize(new Dimension((int) (size.getWidth()*0.8), (int) (size.getHeight()*0.8)));
         //AudioPanel
-        JPanel audioPanel = new AudioPanel();
+        JPanel audioPanel = new AudioPanel(this);
         audioPanel.setBounds(0, getHeight() - 70, getWidth(), 50);
         add(audioPanel);
 
@@ -51,11 +53,40 @@ public class DaleMainFrame extends JFrame {
     }
 
     public void playCurrentSong() throws UnsupportedAudioFileException, IOException {
+        // Check if there is already a song playing
+        if (currentlyPlayingThread != null && currentlyPlayingThread.isAlive()) {
+            // Stop the currently playing song
+            stopCurrentSong();
+        }
 
+        // Create a new thread and start it
+        currentlyPlayingThread = new Thread(() -> {
+            try {
+                playCurrentSongInternal();
+            } catch (UnsupportedAudioFileException | IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        currentlyPlayingThread.start();
+    }
+
+    public void stopCurrentSong() {
+        // Check if there is a song playing
+        if (currentlyPlayingThread != null && currentlyPlayingThread.isAlive()) {
+            // Interrupt the thread to stop the playback
+            currentlyPlayingThread.interrupt();
+            currentlyPlayingThread = null;
+            player.stop();
+        }
+    }
+
+
+    private void playCurrentSongInternal() throws UnsupportedAudioFileException, IOException {
         String mp3FilePath = currentlyPlayingSong.getAbsolutePath();
 
         try (FileInputStream fileInputStream = new FileInputStream(mp3FilePath)) {
-            AdvancedPlayer player = new AdvancedPlayer(fileInputStream);
+            player = new AdvancedPlayer(fileInputStream);
 
             player.setPlayBackListener(new PlaybackListener() {
                 @Override

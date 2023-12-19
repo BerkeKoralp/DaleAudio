@@ -101,7 +101,12 @@ public class SongsPanel extends JPanel {
     }
 
     private void playSelectedSong(File file) throws UnsupportedAudioFileException, IOException {
+        // Stop the currently playing song
+        mainFrame.stopCurrentSong();
+
+        // Set the new song to be played
         mainFrame.setCurrentlyPlayingSong(file);
         mainFrame.playCurrentSong();
     }
+
 }
