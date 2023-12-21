@@ -4,7 +4,7 @@ import java.net.Socket;
 public class Client {
 
     public static void main(String[] args) {
-        String serverAddress = "EXTERNAL_IP_ADDRESS"; // Replace with the actual IP address of the server
+        String serverAddress = "212.133.250.63"; // Replace with the actual IP address of the server
         int serverPort = 3000;
         String filePath = "C:\\Users\\E\\Downloads\\ALIZADE-SU-AN.mp3";
 
