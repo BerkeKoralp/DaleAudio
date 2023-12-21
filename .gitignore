@@ -2,7 +2,6 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-Include dale.db
 
 ### Eclipse ###
 .apt_generated
