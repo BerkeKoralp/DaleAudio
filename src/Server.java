@@ -7,41 +7,47 @@ import java.nio.file.Paths;
 
 public class Server {
 
-    public static void main(String[] args) {
-        int portNumber = 3000;
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
+    private InputStream in;
 
-        try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
-            System.out.println("Server waiting for connection on port " + portNumber);
+    public Server(int portNumber) throws IOException {
+        serverSocket = new ServerSocket(portNumber);
+        System.out.println("Server waiting for connection on port " + portNumber);
+    }
 
-            // Wait for a client to connect
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected from: " + clientSocket.getInetAddress().getHostAddress());
+    public void acceptClientConnection() throws IOException {
+        clientSocket = serverSocket.accept();
+        System.out.println("Client connected from: " + clientSocket.getInetAddress().getHostAddress());
+    }
 
-            // Create a folder to store received songs
-            String folderName = "ReceivedSongs";
-            Path folderPath = Paths.get(folderName);
-            if (!Files.exists(folderPath)) {
-                Files.createDirectory(folderPath);
-                System.out.println("Created folder: " + folderPath.toAbsolutePath());
-            }
+    public void createReceivedSongsFolder() throws IOException {
+        String folderName = "ReceivedSongs";
+        Path folderPath = Paths.get(folderName);
+        if (!Files.exists(folderPath)) {
+            Files.createDirectory(folderPath);
+            System.out.println("Created folder: " + folderPath.toAbsolutePath());
+        }
+    }
 
-            // Open input stream to read data from the client
-            InputStream in = clientSocket.getInputStream();
+    public void initializeInputStream() throws IOException {
+        in = clientSocket.getInputStream();
+    }
 
-            // Read the file name length
-            int fileNameLength = in.read();
+    public void receiveAndSaveFile() throws IOException {
+        // Read the file name length
+        int fileNameLength = in.read();
 
-            // Read the file name
-            byte[] fileNameBytes = new byte[fileNameLength];
-            in.read(fileNameBytes);
-            String fileName = new String(fileNameBytes);
+        // Read the file name
+        byte[] fileNameBytes = new byte[fileNameLength];
+        in.read(fileNameBytes);
+        String fileName = new String(fileNameBytes);
 
-            // Construct the complete path for the received file
-            Path filePath = Paths.get(folderName, fileName);
+        // Construct the complete path for the received file
+        Path filePath = Paths.get("ReceivedSongs", fileName);
 
-            // Open output stream to write the received data to a file
-            BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(filePath.toString()));
-
+        // Open output stream to write the received data to a file
+        try (BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(filePath.toString()))) {
             // Buffer for reading data
             byte[] buffer = new byte[4096];
             int bytesRead;
@@ -52,13 +58,31 @@ public class Server {
             }
 
             System.out.println("File received successfully and stored in: " + filePath.toAbsolutePath());
-
-            // Clean up
-            fileOut.close();
-            in.close();
-            clientSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    }
+
+    public void closeConnections() throws IOException {
+        in.close();
+        clientSocket.close();
+    }
+
+    public  void receiveFile() throws IOException {
+     acceptClientConnection();
+     createReceivedSongsFolder();
+     initializeInputStream();
+     receiveAndSaveFile();
+     closeConnections();
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
+    public InputStream getIn() {
+        return in;
     }
 }
