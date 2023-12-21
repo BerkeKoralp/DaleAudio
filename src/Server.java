@@ -7,9 +7,7 @@ import java.nio.file.Paths;
 
 public class Server {
 
-    public static void main(String[] args) {
-        int portNumber = 3000;
-
+    public static void listen(int portNumber){
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             System.out.println("Server waiting for connection on port " + portNumber);
 
@@ -60,5 +58,9 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        listen(3000);
     }
 }
