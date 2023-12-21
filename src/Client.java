@@ -4,9 +4,9 @@ import java.net.Socket;
 public class Client {
 
     public static void main(String[] args) {
-        String serverAddress = "192.168.0.220"; // Replace with the actual IP address of the server
+        String serverAddress = "EXTERNAL_IP_ADDRESS"; // Replace with the actual IP address of the server
         int serverPort = 3000;
-        String filePath = "C:\\Users\\E\\Downloads\\Samie_Bower_-_One_Gift_Shawty_(For_Christmas) (1).mp3";
+        String filePath = "C:\\Users\\E\\Downloads\\ALIZADE-SU-AN.mp3";
 
         try (Socket socket = new Socket(serverAddress, serverPort);
              OutputStream out = socket.getOutputStream();
