@@ -77,7 +77,7 @@ public class DaleMainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     receiveSong();
-                } catch (IOException ex) {
+                } catch (IOException | UnsupportedAudioFileException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -110,6 +110,7 @@ public class DaleMainFrame extends JFrame {
         });
 
         currentlyPlayingThread.start();
+        System.out.println(currentlyPlayingSong);
     }
 
     public void stopCurrentSong() {
@@ -152,9 +153,25 @@ public class DaleMainFrame extends JFrame {
         }
     }
 
-    public void receiveSong() throws IOException {
+    public void receiveSong() throws IOException, UnsupportedAudioFileException {
         String fileName = server.receiveFile();
-        System.out.println(fileName);
+        // Relative path to the "ReceivedSongs" folder
+        String relativePath = "ReceivedSongs";
+
+        // Get the absolute path
+        String absolutePath = getAbsolutePath(relativePath) + "\\" + fileName;
+        currentlyPlayingSong = new File(absolutePath);
+        playCurrentSong();
+    }
+
+    private static String getAbsolutePath(String relativePath) {
+        // Get the base directory of the project
+        String basePath = new File("").getAbsolutePath();
+
+        // Combine the base path and the relative path to get the absolute path
+        String absolutePath = new File(basePath, relativePath).getAbsolutePath();
+
+        return absolutePath;
     }
 
     public static void main(String[] args) throws IOException {
