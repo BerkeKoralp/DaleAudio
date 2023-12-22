@@ -14,11 +14,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.net.URL;
+>>>>>>> berke
 
 public class DaleMainFrame extends JFrame {
 
     private File currentlyPlayingSong;
     boolean isPlaybackCompleted;
+    private Client client;
+    private Server server ;
     private AdvancedPlayer player;
     private Thread currentlyPlayingThread;
 
@@ -41,12 +45,21 @@ public class DaleMainFrame extends JFrame {
         searchBar.setBounds((int) (getWidth()*0.2),0, (int) (getWidth()*0.8), (int) (getHeight()*0.1));
         add(searchBar);
 
+        //IMAGE TEXT PANEL(Tekrardan build yapmanın yolunu bulmak lazım)
+        URL imageUrl = DaleMainFrame.class.getResource("images/frog.png");
+        Image image = new ImageIcon(imageUrl).getImage();
+        JPanel centerTextPanel = new ImageTextPanel(image,(currentlyPlayingSong != null?currentlyPlayingSong.getName():null) );
+        int panelX = (getWidth() - getWidth()) / 2;
+        int panelY = (getHeight() - getHeight()) / 2;
+        centerTextPanel.setLocation(panelX, panelY);
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
         setLocationRelativeTo(null);
     }
     public void setCurrentlyPlayingSong(File file) {
         this.currentlyPlayingSong = file;
+
     }
 
     public File getCurrentlyPlayingSong() {
@@ -102,6 +115,18 @@ public class DaleMainFrame extends JFrame {
         } catch (JavaLayerException | IOException e) {
             e.printStackTrace();
         }
+    }
+    public void  sendCurrentlyPlayedSong(Server serverOpposite){
+        //Server Adress
+        String serverAdress =serverOpposite.getServerSocket().getInetAddress().getHostAddress();
+        //Server Port
+        int serverPort=serverOpposite.getServerSocket().getLocalPort();
+
+        client.sendFileToServer(serverAdress,serverPort,currentlyPlayingSong.getAbsolutePath());
+    }
+
+    public void receiveSong() throws IOException {
+        server.receiveFile();
     }
 
     public static void main(String[] args) {
