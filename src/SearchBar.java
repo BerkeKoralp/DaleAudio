@@ -7,20 +7,11 @@ public class SearchBar extends JPanel {
         setPreferredSize(new Dimension(300, 60));
         setBackground(Color.BLUE);
 
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel titleLabel = new JLabel("Search");
+        JButton searchButton = new JButton("Search");
         JTextField textField = new JTextField(15);
 
-        titleLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 20));
-        titlePanel.setBorder(BorderFactory.createLineBorder(Color.cyan, 10));
-        titlePanel.add(titleLabel);
-        titlePanel.setBackground(Color.WHITE);
-
-        add(titlePanel, BorderLayout.WEST);
         add(textField, BorderLayout.CENTER);
+        add(searchButton, BorderLayout.WEST);
     }
-
-
-
 
 }

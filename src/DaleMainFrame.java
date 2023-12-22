@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.net.URL;
->>>>>>> berke
 
 public class DaleMainFrame extends JFrame {
 

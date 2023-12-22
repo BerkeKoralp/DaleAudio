@@ -15,8 +15,6 @@ public class Client {
 
             // Send file content to the server
             sendFileContent(out, fileIn);
-
-            System.out.println(fileName + " sent successfully!");
         } catch (IOException e){
             e.printStackTrace();
         }

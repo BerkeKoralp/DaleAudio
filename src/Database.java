@@ -91,8 +91,50 @@ public class Database {
         }
     }
 
+    public void addUser(String username, String password, String IP) {
+        String addUserQuery = "INSERT INTO users (username, password, ipv4_address) VALUES (?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(addUserQuery)) {
+            // Setting the values for the prepared statement
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, IP);
+
+            // Executing the query to insert the new user
+            preparedStatement.executeUpdate();
+
+            System.out.println("User added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception appropriately in your application
+        }
+    }
+
+    public void deleteUser(String username) {
+        String deleteUserQuery = "DELETE FROM users WHERE username = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteUserQuery)) {
+            // Setting the value for the prepared statement
+            preparedStatement.setString(1, username);
+
+            // Executing the query to delete the user
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("User deleted successfully!");
+            } else {
+                System.out.println("User not found or could not be deleted.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception appropriately in your application
+        }
+    }
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public static void main(String[] args) {
+        Database a = new Database();
+        a.deleteUser("dummyuser1");
     }
 }
