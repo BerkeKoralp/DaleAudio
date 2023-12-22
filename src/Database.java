@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,46 +47,23 @@ public class Database {
         return isAuthenticated;
     }
 
-    public void updateIPAddress(String username){
-        String externalIP = getExternalIPAddress();
+    public void updateIPAddress(String username) {
+        String localIP = getLocalIPAddress();
         String updateIP = "UPDATE users SET ipv4_address = ? WHERE username = ?";
-        try(PreparedStatement statement = connection.prepareStatement(updateIP)){
-            statement.setString(1, externalIP);
-            statement.setString(2,username);
+        try (PreparedStatement statement = connection.prepareStatement(updateIP)) {
+            statement.setString(1, localIP);
+            statement.setString(2, username);
             statement.executeUpdate();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private static String getExternalIPAddress() {
+    private static String getLocalIPAddress() {
         try {
-            URL url = new URL("http://httpbin.org/ip");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                StringBuilder response = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-
-                // Parse the JSON response to get the IP address
-                String jsonResponse = response.toString();
-                int startIndex = jsonResponse.indexOf("\"origin\":") + "\"origin\":".length();
-                int endIndex = jsonResponse.indexOf("}", startIndex);
-
-                if (startIndex != -1 && endIndex != -1) {
-                    String ipAddress = jsonResponse.substring(startIndex, endIndex).replaceAll("\"", "").trim();
-                    return ipAddress;
-                } else {
-                    // Handle the case where the JSON structure is unexpected
-                    return null;
-                }
-            }
-        } catch (IOException e) {
+            InetAddress localhost = InetAddress.getLocalHost();
+            return localhost.getHostAddress();
+        } catch (UnknownHostException e) {
             e.printStackTrace();
             // Handle the exception appropriately in your application
             return null;

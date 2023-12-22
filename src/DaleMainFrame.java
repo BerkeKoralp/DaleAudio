@@ -32,6 +32,7 @@ public class DaleMainFrame extends JFrame {
     JPanel centerTextPanel;
 
     public DaleMainFrame() throws HeadlessException, IOException {
+
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         setLayout(null);
         setSize(new Dimension((int) (size.getWidth()*0.8), (int) (size.getHeight()*0.8)));
@@ -159,7 +160,7 @@ public class DaleMainFrame extends JFrame {
         String relativePath = "ReceivedSongs";
 
         // Get the absolute path
-        String absolutePath = getAbsolutePath(relativePath) + "\\" + fileName;
+        String absolutePath = getAbsolutePath(relativePath) + "/" + fileName;
         currentlyPlayingSong = new File(absolutePath);
         playCurrentSong();
     }
