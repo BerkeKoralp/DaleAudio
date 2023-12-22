@@ -59,15 +59,26 @@ public class DaleMainFrame extends JFrame {
         centerTextPanel.setLocation(panelX, panelY);
 
         //SEND SONG BUTTON
-        JButton searchButton = new JButton("Send Song");
-        searchButton.setBounds(getWidth()-200,100,100,100);
-        searchButton.addActionListener(new ActionListener() {
+        JButton sendButton = new JButton("Send Song");
+        sendButton.setBounds(getWidth()-200,100,100,100);
+        sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sendCurrentlyPlayedSong();
             }
         });
-        add(searchButton);
+        add(sendButton);
+
+        //RECEIVE SONG BUTTON
+        JButton receiveButton = new JButton("Receive\nSong");
+        receiveButton.setBounds(getWidth()-200,200,100,100);
+        receiveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendCurrentlyPlayedSong();
+            }
+        });
+        add(receiveButton);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
@@ -138,7 +149,8 @@ public class DaleMainFrame extends JFrame {
     }
 
     public void receiveSong() throws IOException {
-        server.receiveFile();
+        String fileName = server.receiveFile();
+        System.out.println(fileName);
     }
 
     public static void main(String[] args) throws IOException {

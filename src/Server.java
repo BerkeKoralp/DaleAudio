@@ -33,7 +33,7 @@ public class Server {
         in = clientSocket.getInputStream();
     }
 
-    public void receiveAndSaveFile() throws IOException {
+    public String receiveAndSaveFile() throws IOException {
         // Read the file name length
         int fileNameLength = in.read();
 
@@ -58,18 +58,21 @@ public class Server {
 
             System.out.println("File received successfully and stored in: " + filePath.toAbsolutePath());
         }
+
+        return fileName;
     }
     public void closeConnections() throws IOException {
         in.close();
         clientSocket.close();
     }
 
-    public  void receiveFile() throws IOException {
+    public  String receiveFile() throws IOException {
      acceptClientConnection();
      createReceivedSongsFolder();
      initializeInputStream();
-     receiveAndSaveFile();
+     String fileName = receiveAndSaveFile();
      closeConnections();
+     return fileName;
     }
 
     public ServerSocket getServerSocket() {
