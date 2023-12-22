@@ -75,7 +75,11 @@ public class DaleMainFrame extends JFrame {
         receiveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendCurrentlyPlayedSong();
+                try {
+                    receiveSong();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         add(receiveButton);
