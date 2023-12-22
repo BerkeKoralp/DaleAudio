@@ -8,21 +8,22 @@ import javazoom.jl.player.advanced.PlaybackListener;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 public class DaleMainFrame extends JFrame {
 
     private File currentlyPlayingSong;
     boolean isPlaybackCompleted;
-
     private AdvancedPlayer player;
     private Thread currentlyPlayingThread;
 
     public DaleMainFrame() throws HeadlessException {
-        Dimension size
-                = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         setLayout(null);
         setSize(new Dimension((int) (size.getWidth()*0.8), (int) (size.getHeight()*0.8)));
         //AudioPanel
