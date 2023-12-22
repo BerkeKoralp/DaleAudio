@@ -19,7 +19,7 @@ public class LoginFrame extends JFrame {
         JPanel imagePanel = new JPanel();
         imagePanel.setBackground(Color.WHITE);
 
-        ImageIcon originalImageIcon = new ImageIcon("monet.jpg");
+        ImageIcon originalImageIcon = new ImageIcon("alizeyd-uh.PNG");
 
         // Scale the image to fit the panel
         int imagePanelWidth = getWidth() * 2 / 5;
