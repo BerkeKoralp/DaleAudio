@@ -129,12 +129,32 @@ public class Database {
         }
     }
 
+    public String retrieveIP(String username) {
+        String retrieveIPQuery = "SELECT ipv4_address FROM users WHERE username = ?";
+        String ipv4_address = null;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(retrieveIPQuery)) {
+            // Setting the value for the prepared statement
+            preparedStatement.setString(1, username);
+
+            // Executing the query to retrieve the IP address
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    ipv4_address = resultSet.getString("ipv4_address");
+                    System.out.println("IP address retrieved successfully: " + ipv4_address);
+                } else {
+                    System.out.println("User not found or no IP address associated with the user.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ipv4_address;
+    }
+
     public Connection getConnection() {
         return connection;
     }
 
-    public static void main(String[] args) {
-        Database a = new Database();
-        a.deleteUser("dummyuser1");
-    }
 }

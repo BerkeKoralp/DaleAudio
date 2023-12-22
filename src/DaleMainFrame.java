@@ -8,6 +8,8 @@ import javazoom.jl.player.advanced.PlaybackListener;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -20,37 +22,52 @@ public class DaleMainFrame extends JFrame {
 
     private File currentlyPlayingSong;
     boolean isPlaybackCompleted;
-    private Client client;
-    private Server server ;
+    private Client client = new Client();
+    private Server server = new Server(3000);
     private AdvancedPlayer player;
     private Thread currentlyPlayingThread;
+    JPanel audioPanel;
+    JPanel songsPanel;
+    JPanel searchBar;
+    JPanel centerTextPanel;
 
-    public DaleMainFrame() throws HeadlessException {
+    public DaleMainFrame() throws HeadlessException, IOException {
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         setLayout(null);
         setSize(new Dimension((int) (size.getWidth()*0.8), (int) (size.getHeight()*0.8)));
         //AudioPanel
-        JPanel audioPanel = new AudioPanel(this);
+        audioPanel = new AudioPanel(this);
         audioPanel.setBounds(0, getHeight() - 70, getWidth(), 50);
         add(audioPanel);
 
         //SONGS PANEL
-        JPanel songsPanel = new SongsPanel(this);
+        songsPanel = new SongsPanel(this);
         songsPanel.setBounds(0,0, (int) (getWidth()*0.2),getHeight()-60);
         add(songsPanel);
 
         //SEARCH PANEL
-        JPanel searchBar = new SearchBar();
+        searchBar = new SearchBar();
         searchBar.setBounds((int) (getWidth()*0.2),0, (int) (getWidth()*0.8), (int) (getHeight()*0.1));
         add(searchBar);
 
         //IMAGE TEXT PANEL(Tekrardan build yapmanın yolunu bulmak lazım)
         URL imageUrl = DaleMainFrame.class.getResource("images/frog.png");
         Image image = new ImageIcon(imageUrl).getImage();
-        JPanel centerTextPanel = new ImageTextPanel(image,(currentlyPlayingSong != null?currentlyPlayingSong.getName():null) );
+        centerTextPanel = new ImageTextPanel(image,(currentlyPlayingSong != null?currentlyPlayingSong.getName():null) );
         int panelX = (getWidth() - getWidth()) / 2;
         int panelY = (getHeight() - getHeight()) / 2;
         centerTextPanel.setLocation(panelX, panelY);
+
+        //SEND SONG BUTTON
+        JButton searchButton = new JButton("Send Song");
+        searchButton.setBounds(getWidth()-200,100,100,100);
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendCurrentlyPlayedSong();
+            }
+        });
+        add(searchButton);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
@@ -59,10 +76,6 @@ public class DaleMainFrame extends JFrame {
     public void setCurrentlyPlayingSong(File file) {
         this.currentlyPlayingSong = file;
 
-    }
-
-    public File getCurrentlyPlayingSong() {
-        return currentlyPlayingSong;
     }
 
     public void playCurrentSong() throws UnsupportedAudioFileException, IOException {
@@ -115,20 +128,20 @@ public class DaleMainFrame extends JFrame {
             e.printStackTrace();
         }
     }
-    public void  sendCurrentlyPlayedSong(Server serverOpposite){
-        //Server Adress
-        String serverAdress =serverOpposite.getServerSocket().getInetAddress().getHostAddress();
-        //Server Port
-        int serverPort=serverOpposite.getServerSocket().getLocalPort();
-
-        client.sendFileToServer(serverAdress,serverPort,currentlyPlayingSong.getAbsolutePath());
+    public void sendCurrentlyPlayedSong(){
+        String IP = SearchBar.currentUserToSendMusic;
+        if(IP == null){
+            JOptionPane.showMessageDialog(DaleMainFrame.this, "You haven't searched yet.");
+        }else{
+            client.sendFileToServer(IP,currentlyPlayingSong.getAbsolutePath());
+        }
     }
 
     public void receiveSong() throws IOException {
         server.receiveFile();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
             new DaleMainFrame();
     }
 

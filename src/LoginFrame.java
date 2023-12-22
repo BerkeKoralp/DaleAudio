@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class LoginFrame extends JFrame {
     private JTextField usernameField;
@@ -53,7 +54,11 @@ public class LoginFrame extends JFrame {
                 if (loginSuccessful) {
                     App.database.updateIPAddress(usernameField.getText());
                     dispose(); // Close the login frame
-                    new DaleMainFrame(); // Open the main frame
+                    try {
+                        new DaleMainFrame(); // Open the main frame
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(LoginFrame.this, "Invalid username or password");
                 }

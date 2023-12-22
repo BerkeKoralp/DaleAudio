@@ -5,7 +5,8 @@ public class Client {
     // Buffer size for reading data from the file
     private static final int BUFFER_SIZE = 4096;
     // Method to send a file to the server
-    public  void sendFileToServer(String serverAddress, int serverPort, String filePath) {
+    public  void sendFileToServer(String serverAddress, String filePath) {
+        int serverPort = 3000;
         try (Socket socket = new Socket(serverAddress, serverPort);
              OutputStream out = socket.getOutputStream();
              BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(filePath))) {
